@@ -35,14 +35,14 @@ export const sendEmail = async (to: Recipient[], subject: string, content: Email
     const email: Email = {
         personalizations: [
             {
-                to,
-                ...(dkimConfig ? dkimConfig : {})
+                to: to
             } 
         ],
         from: sender,
-        subject,
-        content
+        subject: subject,
+        content: content
     };
+    
     const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -51,9 +51,10 @@ export const sendEmail = async (to: Recipient[], subject: string, content: Email
         },
         body: JSON.stringify(email)
     });
+
     if (response.status === 401) {
         throw new Error(`MailChannels API returned 401 Unauthorized. Are you sending from a Cloudflare IP?`);
-    } else if (response.status === 200) {
+    } else if (response.status >= 200 && response.status < 300) {
         return true;
     } else {
         throw new Error(`MailChannels API returned ${response.status} ${response.statusText}`);

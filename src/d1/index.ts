@@ -1,5 +1,5 @@
-import SQLTable from "./table";
-import SQLColumn from "./column";
+import { SQLTable } from "./table";
+import { SQLColumn, CURRENT_TIMESTAMP } from "./column";
 import { D1Database, D1Result } from "./types";
 
 const createTable = async (db: AutoFlareD1, table: SQLTable) : Promise<boolean> => {
@@ -75,4 +75,4 @@ class AutoFlareD1 {
     }
 };
 
-export { AutoFlareD1, SQLTable, SQLColumn };
+export { AutoFlareD1, SQLTable, SQLColumn, CURRENT_TIMESTAMP };

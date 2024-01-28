@@ -15,7 +15,7 @@ npm install autoflare
 ### Declarative Schema Error-driven Synchronization (Note: Can only create)
 
 ```ts
-import { AutoFlareD1, SQLTable, SQLColumn } from "autoflare";
+import { AutoFlareD1, SQLColumn, SQLTable, CURRENT_TIMESTAMP } from "autoflare/d1";
 
 let db: AutoFlareD1 = new AutoFlareD1(YOUR_D1_BINDING);
 
@@ -27,8 +27,8 @@ db.tables.set("user", new SQLTable("user", [
     new SQLColumn("display_name").varchar(64).notNull(),
     new SQLColumn("hashed_password").varchar(64).notNull(),
     new SQLColumn("email_verified").bit().notNull().default(0),
-    new SQLColumn("updated_at").datetime().notNull().default("CURRENT_TIMESTAMP"),
-    new SQLColumn("created_at").datetime().notNull().default("CURRENT_TIMESTAMP")
+    new SQLColumn("updated_at").datetime().notNull().default(CURRENT_TIMESTAMP),
+    new SQLColumn("created_at").datetime().notNull().default(CURRENT_TIMESTAMP)
 ]));
 
 const res = await db.exec('SELECT * FROM user WHERE username = ?', [ 'anon' ]);

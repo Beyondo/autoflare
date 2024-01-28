@@ -1,4 +1,6 @@
-export default class SQLColumn {
+export const CURRENT_TIMESTAMP = Symbol("CURRENT_TIMESTAMP");
+
+export class SQLColumn {
     private _primaryKey: boolean = false;
     private _autoIncrement: boolean = false;
     private _notNull: boolean = false;
@@ -99,7 +101,7 @@ export default class SQLColumn {
             str += " INDEX";
         }
         if (this._default !== undefined) {
-            str += ` DEFAULT ${typeof this._default === "string" ? `'${this._default}'` : this._default}`;
+            str += ` DEFAULT ${typeof this._default === "string" ? `'${this._default}'` : this._default === CURRENT_TIMESTAMP ? "CURRENT_TIMESTAMP" : this._default}`;
         }
         return str;
     }

@@ -1,6 +1,6 @@
-import SQLColumn from "./column";
+import { SQLColumn } from "./column";
 
-export default class SQLTable {
+export class SQLTable {
     constructor(
         public name: string,
         public columns: SQLColumn[] = []
