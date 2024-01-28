@@ -31,17 +31,20 @@ const getMissingColumn = (exceptionString: string) : string | null => {
 }
 
 export default class AutoFlareD1 {
-    constructor(public binding: D1Database, public tables: Map<string, SQLTable> = new Map()) {
+    constructor(public binding?: D1Database, public tables: Map<string, SQLTable> = new Map()) {
     }
 
     bind(binding: D1Database) {
         if (!binding) {
-            throw new Error("Empty binding");
+            throw new Error("Tried to bind an empty binding");
         }
         this.binding = binding;
     }
 
     async exec(query: string, params?: any[]): Promise<D1Result> {
+        if (!this.binding) {
+            throw new Error("No database was bound AutoFlareD1");
+        }
         try {
             return await this.binding.prepare(query).bind(...(params ?? [])).run();
         } catch (e: any) {

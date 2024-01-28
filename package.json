@@ -1,6 +1,6 @@
 {
     "name": "autoflare",
-    "version": "0.4.2",
+    "version": "0.4.8",
     "description": "A declarative lightweight library for dynamic error-driven SQL schema synchronization, and automatic management and implementations of various Cloudflare services and features.",
     "keywords": [
         "typescript",
@@ -18,21 +18,28 @@
         "cloudflare-mail"
     ],
     "scripts": {
+        "prepare": "node prepare-publish.js",
         "build": "rimraf dist && tsc",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Beyondo",
     "license": "MIT",
     "devDependencies": {
+        "fs-extra": "^11.2.0",
         "rimraf": "^5.0.5",
         "typescript": "^5.3.3"
     },
     "exports": {
-        "./d1": "./dist/d1/index.js",
-        "./d1/*": "./dist/d1/*",
-        "./mail": "./dist/mail/index.js",
-        "./mail/*": "./dist/mail/*"
+        "./d1": {
+            "import": "./dist/d1/index.js",
+            "types": "./dist/d1/index.d.ts"
+        },
+        "./mail": {
+            "import": "./dist/mail/index.js",
+            "types": "./dist/mail/index.d.ts"
+        }
     },
+    "type": "commonjs",
     "files": [
         "dist",
         "LICENSE",
