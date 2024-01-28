@@ -1,5 +1,5 @@
-import SQLTable from "../table";
-import SQLColumn from "../column";
+import SQLTable from "./table";
+import SQLColumn from "./column";
 import { D1Database, D1Result } from "./types";
 
 const createTable = async (db: AutoFlareD1, table: SQLTable) : Promise<boolean> => {
