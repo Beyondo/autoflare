@@ -30,7 +30,7 @@ const getMissingColumn = (exceptionString: string) : string | null => {
     return null;
 }
 
-export default class AutoFlareD1 {
+class AutoFlareD1 {
     constructor(public binding?: D1Database, public tables: Map<string, SQLTable> = new Map()) {
     }
 
@@ -75,4 +75,4 @@ export default class AutoFlareD1 {
     }
 };
 
-export { SQLTable, SQLColumn };
+export { AutoFlareD1, SQLTable, SQLColumn };

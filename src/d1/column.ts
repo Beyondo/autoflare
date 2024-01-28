@@ -99,7 +99,7 @@ export default class SQLColumn {
             str += " INDEX";
         }
         if (this._default !== undefined) {
-            str += ` DEFAULT ${this._default}`;
+            str += ` DEFAULT ${typeof this._default === "string" ? `'${this._default}'` : this._default}`;
         }
         return str;
     }
