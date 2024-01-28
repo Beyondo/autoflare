@@ -1,12 +1,11 @@
 const endpoint = 'https://api.mailchannels.net/tx/v1/send';
 
-export interface EmailTo {
-    email: string;
-    name: string;
+export class Recipient {
+    constructor(public email: string, public name?: string) { }
 }
 
 export interface EmailPersonalization {
-    to: EmailTo[];
+    to: Recipient[];
 }
 
 export interface SenderData {
@@ -15,7 +14,7 @@ export interface SenderData {
 }
 
 export interface EmailContent {
-    type: string;
+    type: string; // Example: "text/plain" or "text/html"
     value: string;
 }
 
@@ -26,14 +25,18 @@ export interface Email {
     content: EmailContent[];
 }
 
-export const sendEmail = async (to: string[], subject: string, content: EmailContent[], sender: SenderData) => {
+export interface EmailDKIM {
+    dkim_domain: string;
+    dkim_private_key: string;
+    dkim_selector: string;
+}
+
+export const sendEmail = async (to: Recipient[], subject: string, content: EmailContent[], sender: SenderData, dkimConfig?: EmailDKIM) => {
     const email: Email = {
         personalizations: [
             {
-                to: to.map((email) => ({
-                    email,
-                    name: email
-                }))
+                to,
+                ...(dkimConfig ? dkimConfig : {})
             } 
         ],
         from: sender,
@@ -55,4 +58,8 @@ export const sendEmail = async (to: string[], subject: string, content: EmailCon
     } else {
         throw new Error(`MailChannels API returned ${response.status} ${response.statusText}`);
     }
+}
+
+export const sendSingleEmail = async (to: Recipient, subject: string, content: EmailContent[], sender: SenderData, dkimConfig?: EmailDKIM) => {
+    return await sendEmail([to], subject, content, sender, dkimConfig);
 }
