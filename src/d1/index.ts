@@ -2,6 +2,8 @@ import { SQLTable } from "./table";
 import { SQLColumn, CURRENT_TIMESTAMP } from "./column";
 import { D1Database, D1Result } from "./types";
 
+import { AutoFlareCollection } from "./nosql/collection";
+
 const createTable = async (db: AutoFlareD1, table: SQLTable) : Promise<boolean> => {
     const query = table.createString;
     const res = await db.exec(query);
@@ -72,6 +74,10 @@ class AutoFlareD1 {
             }
             throw e;
         }
+    }
+
+    collection(name: string): AutoFlareCollection {
+        return new AutoFlareCollection(this, name);
     }
 };
 
