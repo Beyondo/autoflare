@@ -20,13 +20,12 @@ import { AutoFlareD1, SQLColumn, SQLTable, CURRENT_TIMESTAMP } from "autoflare/d
 let db: AutoFlareD1 = new AutoFlareD1(YOUR_D1_BINDING);
 
 db.tables.set("user", new SQLTable("user", [
-    new SQLColumn("id").integer().primaryKey().autoIncrement(),
     new SQLColumn("uid").binary(16).notNull().unique().index(),
     new SQLColumn("username").varchar(32).notNull().unique().index(),
     new SQLColumn("email").varchar(64).notNull().unique().index(),
     new SQLColumn("display_name").varchar(64).notNull(),
     new SQLColumn("hashed_password").varchar(64).notNull(),
-    new SQLColumn("email_verified").bit().notNull().default(0),
+    new SQLColumn("is_email_verified").boolean().notNull().default(0),
     new SQLColumn("updated_at").datetime().notNull().default(CURRENT_TIMESTAMP),
     new SQLColumn("created_at").datetime().notNull().default(CURRENT_TIMESTAMP)
 ]));

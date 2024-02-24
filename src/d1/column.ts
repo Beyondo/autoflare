@@ -37,6 +37,11 @@ export class SQLColumn {
         return this;
     }
 
+    boolean() {
+        this._type = "BOOLEAN";
+        return this;
+    }
+
     bit() {
         this._type = "BIT";
         return this;

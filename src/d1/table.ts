@@ -39,7 +39,7 @@ export class SQLTable {
     }
 
     get createString() {
-        return `CREATE TABLE '${this.name}' (${this.columnsString});`;
+        return `CREATE TABLE \`${this.name}\` (${this.columnsString});`;
     }
 
     get insertString() {
