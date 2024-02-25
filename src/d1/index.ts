@@ -2,15 +2,15 @@ import { SQLTable } from "./table";
 import { SQLColumn, CURRENT_TIMESTAMP } from "./column";
 import { D1Database, D1Result } from "./types";
 
-import { AutoFlareCollection } from "./nosql/collection";
+import { FlareCollection } from "./nosql/collection";
 
-const createTable = async (db: AutoFlareD1, table: SQLTable) : Promise<boolean> => {
+const createTable = async (db: AutoFlareDB, table: SQLTable) : Promise<boolean> => {
     const query = table.createString;
     const res = await db.exec(query);
     return res.success;
 }
 
-const createColumn = async (db: AutoFlareD1, table: SQLTable, columnName: string) : Promise<boolean> => {
+const createColumn = async (db: AutoFlareDB, table: SQLTable, columnName: string) : Promise<boolean> => {
     const query = table.createColumnString(columnName, true);
     const res = await db.exec(query);
     return res.success;
@@ -32,7 +32,7 @@ const getMissingColumn = (exceptionString: string) : string | null => {
     return null;
 }
 
-class AutoFlareD1 {
+class AutoFlareDB {
     constructor(public binding?: D1Database, public tables: Map<string, SQLTable> = new Map()) {
     }
 
@@ -76,9 +76,9 @@ class AutoFlareD1 {
         }
     }
 
-    collection(name: string): AutoFlareCollection {
-        return new AutoFlareCollection(this, name);
+    collection(name: string): FlareCollection {
+        return new FlareCollection(this, name);
     }
 };
 
-export { AutoFlareD1, SQLTable, SQLColumn, CURRENT_TIMESTAMP };
+export { AutoFlareDB, SQLTable, SQLColumn, CURRENT_TIMESTAMP };

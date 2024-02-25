@@ -1,5 +1,5 @@
-import { AutoFlareD1 } from "..";
-import { AutoFlareQuery } from "./query";
+import { AutoFlareDB } from "..";
+import { FlareQuery } from "./query";
 
 //export type WhereOperation = "==" | "!=" | ">" | "<" | ">=" | "<=" | "like" | "not-like" | "in" | "not-in";
 
@@ -16,19 +16,24 @@ export enum Operator {
     NOT_IN = "NOT IN"
 }
 
+export type StringOperator = "==" | "!=" | ">" | "<" | ">=" | "<=" | "LIKE" | "NOT LIKE" | "IN" | "NOT IN";
 
-export class AutoFlareCollection {
-    constructor(public d1Ref: AutoFlareD1, public name: string) {
+export class FlareCollection {
+    constructor(public d1Ref: AutoFlareDB, public name: string) {
     }
 
-    where(column: string, operator: Operator, value: any): AutoFlareQuery {
-        this.where(column, Operator.EQUALS, 'test')
+    where(column: string, operator: Operator | StringOperator, value: any): FlareQuery {
         const query_string = `SELECT * FROM ${this.name} WHERE ${column} ${operator} ?`;
         const statement = this.d1Ref.binding?.prepare(query_string).bind(value);
         if (!statement) {
             throw new Error("Failed to prepare query");
         } else {
-            return new AutoFlareQuery(statement);
+            return new FlareQuery(statement);
         }
     }
 }
+/*
+let testCollection = new FlareCollection(new AutoFlareDB(), 'test');
+
+testCollection.where('name', "==", 'John');
+*/
