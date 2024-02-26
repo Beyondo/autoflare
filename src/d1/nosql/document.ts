@@ -13,12 +13,12 @@ const convertFieldsToSQL = (fields: any) => {
 
 
 export class FlareDocument {
-    constructor(public d1Ref: AutoFlareDB, public collection: FlareCollection, public uid: string) {
+    constructor(public d1Ref: AutoFlareDB, public parent: FlareCollection, public uid: string) {
     }
     
     set(data: any): FlareQuery {
         const fields = convertFieldsToSQL(data);
-        const statement = this.d1Ref.binding?.prepare(`INSERT INTO ${this.collection} ${fields.text}`).bind(fields.values);
+        const statement = this.d1Ref.binding?.prepare(`INSERT INTO ${this.parent} ${fields.text}`).bind(fields.values);
         if (!statement) {
             throw new Error("Failed to prepare query");
         } else {
