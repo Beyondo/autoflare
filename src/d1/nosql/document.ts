@@ -1,5 +1,5 @@
 import { AutoFlareDB } from "..";
-import { FlareCollection } from "./collection";
+import { FlareCollectionReference } from "./collection";
 import { FlareQuery } from "./query";
 
 const convertFieldsToSQL = (fields: any) => {
@@ -11,18 +11,43 @@ const convertFieldsToSQL = (fields: any) => {
     return { text, values };
 }
 
+export class FlareDocumentSnapshot {
+    constructor(private meta: any, private row: any) {
+    }
 
-export class FlareDocument {
-    constructor(public d1Ref: AutoFlareDB, public parent: FlareCollection, public uid: string) {
+    get exists() {
+        return this.row !== undefined;
+    }
+
+    get metadata() {
+        return this.meta;
+    }
+
+    data(): Object | undefined {
+        return this.row;
+    }
+}
+
+export class FlareDocumentReference {
+    constructor(public d1Ref: AutoFlareDB, public parent: FlareCollectionReference, public uid: string) {
     }
     
-    set(data: any): FlareQuery {
-        const fields = convertFieldsToSQL(data);
-        const statement = this.d1Ref.binding?.prepare(`INSERT INTO ${this.parent} ${fields.text}`).bind(fields.values);
-        if (!statement) {
-            throw new Error("Failed to prepare query");
-        } else {
-            return new FlareQuery(statement);
+    async set(data: any): Promise<FlareDocumentReference> {
+        const { text, values } = convertFieldsToSQL(data);
+        const result = await this.d1Ref.exec(`INSERT INTO ${this.parent.name} ${text}`, values);
+        if (!result.success) {
+            throw new Error(result.error);
         }
+        return this;
+    }
+
+    async get() {
+        const query = `SELECT * FROM ${this.parent.name} WHERE uid = $1`;
+        const result = await this.d1Ref.exec(query, [this.uid]);
+        if (!result.success) {
+            throw new Error(result.error);
+        }
+        console.log(result);
+        return new FlareDocumentSnapshot(result.meta, result.results[0]);
     }
 }
