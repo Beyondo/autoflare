@@ -2,7 +2,7 @@ import { SQLTable } from "./table";
 import { SQLColumn, CURRENT_TIMESTAMP } from "./column";
 import { D1Database, D1Result } from "./types";
 
-import { FlareCollection } from "./nosql/collection";
+import { FlareCollectionReference } from "./nosql/collection";
 
 const createTable = async (db: AutoFlareDB, table: SQLTable) : Promise<boolean> => {
     const query = table.createString;
@@ -76,8 +76,8 @@ class AutoFlareDB {
         }
     }
 
-    collection(name: string): FlareCollection {
-        return new FlareCollection(this, name);
+    collection(name: string): FlareCollectionReference {
+        return new FlareCollectionReference(this, name);
     }
 };
 
