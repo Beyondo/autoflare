@@ -1,6 +1,5 @@
 import { AutoFlareDB } from "..";
 import { FlareCollectionReference } from "./collection";
-import { FlareQuery } from "./query";
 
 const convertFieldsToSQL = (fields: any) => {
     // {name: "John", age: 30} => { text: `(name, age) VALUES ($1, $2)`, values: ["John", 30] }
@@ -9,6 +8,10 @@ const convertFieldsToSQL = (fields: any) => {
     const placeholders = values.map((_, index) => `$${index + 1}`).join(", ");
     const text = `(${keys.join(", ")}) VALUES (${placeholders})`;
     return { text, values };
+}
+
+export declare interface FlareDocumentData {
+    [field: string]: any;
 }
 
 export class FlareDocumentSnapshot {
@@ -23,7 +26,14 @@ export class FlareDocumentSnapshot {
         return this.meta;
     }
 
-    data(): Object | undefined {
+    data(): FlareDocumentData | undefined;
+    data(options: { requireExists: true }): FlareDocumentData;
+
+    // Implementation signature
+    data(options?: { requireExists: boolean }): FlareDocumentData | undefined {
+        if (options?.requireExists && !this.exists) {
+            throw new Error("Document does not exist");
+        }
         return this.row;
     }
 }

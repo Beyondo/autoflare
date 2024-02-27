@@ -1,6 +1,6 @@
 {
     "name": "autoflare",
-    "version": "0.6.15",
+    "version": "0.6.17",
     "description": "A declarative lightweight library for dynamic error-driven SQL schema synchronization, and automatic management and implementations of various Cloudflare services and features.",
     "keywords": [
         "typescript",
