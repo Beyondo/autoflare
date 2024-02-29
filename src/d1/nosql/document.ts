@@ -2,12 +2,11 @@ import { AutoFlareDB } from "..";
 import { FlareCollectionReference } from "./collection";
 
 const convertFieldsToSQL = (fields: any) => {
-    // {name: "John", age: 30} => { text: `(name, age) VALUES ($1, $2)`, values: ["John", 30] }
+    // {name: "John", age: 30} => { text: `(name, age) VALUES (?1, ?2)`, values: ["John", 30] }
     const keys = Object.keys(fields);
     const values = Object.values(fields);
-    const placeholders = values.map((_, index) => `$${index + 1}`).join(", ");
-    const text = `(${keys.join(", ")}) VALUES (${placeholders})`;
-    return { text, values };
+    const query = `(${keys.join(", ")}) VALUES (${values.map((_, index) => `?${index + 1}`).join(", ")})`;
+    return { query, keys, values };
 }
 
 export declare interface FlareDocumentData {
@@ -38,12 +37,25 @@ export class FlareDocumentSnapshot {
     }
 }
 
+function hasAllFields(objA: any, objB: any) {
+    return Object.keys(objB).every(key => objA.hasOwnProperty(key));
+}
+
 export class FlareDocumentReference {
     constructor(public d1Ref: AutoFlareDB, public parent: FlareCollectionReference, public uid: string) {
+        
     }
     
     async set(data: any): Promise<FlareDocumentReference> {
-        const { text, values } = convertFieldsToSQL(data);
+        const table = this.parent.table;
+        const keys = Object.keys(data);
+        const values = Object.values(data);
+        
+        if (!hasAllFields(table.schema, data)) {
+            throw new Error("Document data does not match the table schema");
+        }
+        
+
         const result = await this.d1Ref.exec(`INSERT INTO ${this.parent.name} ${text}`, values);
         if (!result.success) {
             throw new Error(result.error);

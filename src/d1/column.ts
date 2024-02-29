@@ -12,6 +12,10 @@ export class SQLColumn {
         public name: string
     ) {}
 
+    isUnique() {
+        return this._unique;
+    }
+
     primaryKey(value = true) {
         this._primaryKey = value;
         return this;
